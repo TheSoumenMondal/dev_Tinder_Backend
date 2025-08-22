@@ -1,6 +1,9 @@
 import DuplicateEntryError from "../errors/duplicateEntryError.js";
 import { BaseError } from "../errors/baseError.js";
 import UserModel from "../models/user.model.js";
+import { NotFoundError } from "../errors/notFoundError.js";
+import VerificationError from "../errors/verificationError.js";
+import bcrypt from "bcryptjs";
 class UserRepository {
     async signUp(signUpData) {
         try {
@@ -23,6 +26,25 @@ class UserRepository {
                 throw error;
             }
             throw new Error(`Error signing up user: ${error}`);
+        }
+    }
+    async logIn(email, password) {
+        try {
+            const user = await UserModel.findOne({ email: email });
+            if (!user) {
+                throw new NotFoundError({ resource: "User" });
+            }
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+                throw new VerificationError({ email, password });
+            }
+            return user;
+        }
+        catch (error) {
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new Error("Error while logging in.");
         }
     }
 }

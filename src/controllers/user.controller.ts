@@ -16,3 +16,4 @@ export async function signUpUser(req: Request, res: Response) {
     statusCode: 201,
   });
 }
+
