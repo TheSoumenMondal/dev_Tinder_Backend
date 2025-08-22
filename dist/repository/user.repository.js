@@ -62,5 +62,21 @@ class UserRepository {
             throw new Error("Error while fetching user.");
         }
     }
+    async getAllProfiles(userId) {
+        try {
+            const users = await UserModel.find({
+                _id: {
+                    $ne: userId,
+                },
+            });
+            if (users.length === 0) {
+                throw new Error("No users found.");
+            }
+            return users;
+        }
+        catch (error) {
+            throw new Error("Error while getting all profiles.");
+        }
+    }
 }
 export default UserRepository;

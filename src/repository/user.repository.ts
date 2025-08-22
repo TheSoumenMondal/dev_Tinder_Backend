@@ -57,12 +57,28 @@ class UserRepository {
       if (!user) {
         throw new NotFoundError({ resource: "User" });
       }
-      return user
+      return user;
     } catch (error) {
       if (error instanceof BaseError) {
         throw error;
       }
       throw new Error("Error while fetching user.");
+    }
+  }
+
+  async getAllProfiles(userId: string) {
+    try {
+      const users = await UserModel.find({
+        _id: {
+          $ne: userId,
+        },
+      });
+      if (users.length === 0) {
+        throw new Error("No users found.");
+      }
+      return users;
+    } catch (error) {
+      throw new Error("Error while getting all profiles.");
     }
   }
 }

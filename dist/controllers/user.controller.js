@@ -26,3 +26,14 @@ export async function getMyProfile(req, res) {
         statusCode: StatusCodes.OK,
     });
 }
+export async function getAllProfiles(req, res) {
+    const token = req.cookies?.token;
+    const decodedData = JwtStrategy.verifyJwt(token);
+    const users = await userService.getAllProfiles(decodedData.userId);
+    return generateApiResponse(res, {
+        data: users,
+        error: null,
+        message: "All user profiles fetched successfully",
+        statusCode: StatusCodes.OK,
+    });
+}

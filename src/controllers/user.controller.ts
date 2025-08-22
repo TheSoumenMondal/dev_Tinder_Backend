@@ -31,3 +31,15 @@ export async function getMyProfile(req: Request, res: Response) {
     statusCode: StatusCodes.OK,
   });
 }
+
+export async function getAllProfiles(req: Request, res: Response) {
+  const token = req.cookies?.token;
+  const decodedData = JwtStrategy.verifyJwt(token) as JwtPayload;
+  const users = await userService.getAllProfiles(decodedData.userId);
+  return generateApiResponse(res, {
+    data: users,
+    error: null,
+    message: "All user profiles fetched successfully",
+    statusCode: StatusCodes.OK,
+  });
+}

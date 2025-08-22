@@ -10,5 +10,9 @@ class UserService {
         const user = await this.userRepository.getUserById(userId);
         return user;
     }
+    async getAllProfiles(userId) {
+        const users = await this.userRepository.getAllProfiles(userId);
+        return users;
+    }
 }
 export default UserService;
