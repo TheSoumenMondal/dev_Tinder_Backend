@@ -1,4 +1,6 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
+
+type connectionType = "accepted" | "rejected" | "ignored" | "interested";
 
 export interface ILike extends Document {
   project: string;
@@ -32,4 +34,10 @@ export interface ApiResponse<T = unknown> {
   message: string;
   error: string | null;
   statusCode: number;
+}
+
+export interface IConnection extends Document {
+  senderId: ObjectId;
+  receiverId: ObjectId;
+  status: connectionType;
 }
