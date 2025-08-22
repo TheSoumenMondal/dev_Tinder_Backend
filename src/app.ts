@@ -1,0 +1,15 @@
+import bodyParser from "body-parser";
+import express from "express";
+import apiRouter from "./routes/index.js";
+import { ErrorHandler } from "./utils/errorHandler.js";
+
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use("/api", apiRouter);
+
+//Called at last
+app.use(ErrorHandler);
+
+export default app;
