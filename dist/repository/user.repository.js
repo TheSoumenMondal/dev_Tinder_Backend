@@ -47,5 +47,20 @@ class UserRepository {
             throw new Error("Error while logging in.");
         }
     }
+    async getUserById(userId) {
+        try {
+            const user = await UserModel.findById(userId);
+            if (!user) {
+                throw new NotFoundError({ resource: "User" });
+            }
+            return user;
+        }
+        catch (error) {
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new Error("Error while fetching user.");
+        }
+    }
 }
 export default UserRepository;

@@ -19,7 +19,7 @@ export const logInUser = async (req: Request, res: Response) => {
       });
     }
 
-    const { user, verificationToken } = await authService.LogInUser(
+    const { sanitizedUser, verificationToken } = await authService.LogInUser(
       email,
       password
     );
@@ -34,7 +34,7 @@ export const logInUser = async (req: Request, res: Response) => {
     return generateApiResponse(res, {
       statusCode: 200,
       message: "Login successful",
-      data: user,
+      data: sanitizedUser,
     });
   } catch (error) {
     if (error instanceof BaseError) {

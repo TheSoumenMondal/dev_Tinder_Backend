@@ -11,6 +11,10 @@ class UserService {
     const user = await this.userRepository.signUp(signUpData);
     return user;
   }
+  async getUserById(userId : string) {
+    const user = await this.userRepository.getUserById(userId);
+    return user;
+  }
 }
 
 export default UserService;

@@ -1,6 +1,7 @@
 import VerificationError from "../errors/verificationError.js";
 import UserRepository from "../repository/user.repository.js";
 import { JwtStrategy } from "../utils/jwt.js";
+import sanitizeLoginUserResponse from "../utils/sanitizeUser.js";
 
 class AuthService {
   private userRepository: UserRepository;
@@ -14,8 +15,9 @@ class AuthService {
     if (!verificationToken) {
       throw new VerificationError({ email, password });
     }
+    const sanitizedUser = sanitizeLoginUserResponse(user);
     return {
-      user,
+      sanitizedUser,
       verificationToken,
     };
   }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtStrategy } from "../utils/jwt.js";
 import { generateApiResponse } from "../utils/apiResponse.js";
+import { StatusCodes } from "http-status-codes";
 
 interface AuthenticatedRequest extends Request {
   user?: any;
@@ -16,7 +17,7 @@ export const authenticateToken = async (
 
     if (!token) {
       return generateApiResponse(res, {
-        statusCode: 401,
+        statusCode: StatusCodes.UNAUTHORIZED,
         message: "Access token required",
         error: "Unauthorized",
       });
@@ -31,17 +32,6 @@ export const authenticateToken = async (
         error: "Unauthorized",
       });
     }
-
-    // Optional: Fetch user from database to ensure user still exists
-    // const userRepository = new UserRepository();
-    // const user = await userRepository.findById(decoded.userId);
-    // if (!user) {
-    //   return generateApiResponse(res, {
-    //     statusCode: 401,
-    //     message: "User not found",
-    //     error: "Unauthorized"
-    //   });
-    // }
 
     req.user = decoded;
     next();
@@ -72,7 +62,6 @@ export const optionalAuth = async (
 
     next();
   } catch (error) {
-    // Continue without authentication for optional auth
     next();
   }
 };
