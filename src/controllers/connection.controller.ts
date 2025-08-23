@@ -14,9 +14,11 @@ export const sendConnectionRequest = async (req: Request, res: Response) => {
   const decodedData = JwtStrategy.verifyJwt(token) as JwtPayload;
   const senderId = decodedData.userId;
   const receiverId = req.body.receiverId;
+  const connectionStatus = req.body.status;
   const connection = await connectionService.sendConnectionRequest(
     senderId,
-    receiverId
+    receiverId,
+    connectionStatus
   );
   return generateApiResponse(res, {
     data: connection,

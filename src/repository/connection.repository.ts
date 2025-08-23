@@ -1,11 +1,16 @@
 import { BaseError } from "../errors/baseError.js";
 import DuplicateEntryError from "../errors/duplicateEntryError.js";
 import { NotFoundError } from "../errors/notFoundError.js";
+import ValidationError from "../errors/validationError.js";
 import ConnectionModel from "../models/connection.model.js";
 import UserModel from "../models/user.model.js";
 
 class ConnectionRepository {
-  async sendConnectionRequest(senderId: string, receiverId: string) {
+  async sendConnectionRequest(
+    senderId: string,
+    receiverId: string,
+    connectionStatus: "ignored" | "interested"
+  ) {
     try {
       const receiver = await UserModel.findById(receiverId);
       if (!receiver) {
@@ -21,10 +26,14 @@ class ConnectionRepository {
         throw new DuplicateEntryError("Connection");
       }
 
+      if (connectionStatus !== "ignored" && connectionStatus !== "interested") {
+        throw new ValidationError("Connection status");
+      }
+
       const newConnection = await ConnectionModel.create({
         receiverId: receiverId,
         senderId: senderId,
-        status: "interested",
+        status: connectionStatus,
       });
 
       return newConnection;
