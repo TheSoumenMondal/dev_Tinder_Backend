@@ -1,6 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 
-type connectionType = "accepted" | "rejected" | "ignored" | "interested";
+export type connectionType = "accepted" | "rejected" | "ignored" | "interested";
 
 export interface ILike extends Document {
   project: string;

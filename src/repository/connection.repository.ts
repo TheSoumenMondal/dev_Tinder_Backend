@@ -2,8 +2,10 @@ import { BaseError } from "../errors/baseError.js";
 import DuplicateEntryError from "../errors/duplicateEntryError.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import ValidationError from "../errors/validationError.js";
+import VerificationError from "../errors/verificationError.js";
 import ConnectionModel from "../models/connection.model.js";
 import UserModel from "../models/user.model.js";
+import { connectionType } from "../types/index.js";
 
 class ConnectionRepository {
   async sendConnectionRequest(
@@ -37,6 +39,44 @@ class ConnectionRepository {
       });
 
       return newConnection;
+    } catch (error) {
+      if (error instanceof BaseError) {
+        throw error;
+      }
+      throw new Error("Failed to send connection request");
+    }
+  }
+
+  async updateConnectionStatus(
+    currentUserId: string,
+    status: Partial<connectionType>,
+    connectionId: string
+  ) {
+    try {
+      const connection = await ConnectionModel.findOne({
+        _id: connectionId,
+      });
+      if (!connection) {
+        throw new NotFoundError({ resource: "Connection" });
+      }
+
+      if (connection.receiverId.toString() !== currentUserId) {
+        throw new VerificationError("Receiver");
+      }
+
+      const updatedConnection = await ConnectionModel.findOneAndUpdate(
+        {
+          _id: connectionId,
+        },
+        {
+          status: status,
+        },
+        {
+          new: true,
+        }
+      );
+
+      return updatedConnection;
     } catch (error) {
       if (error instanceof BaseError) {
         throw error;
