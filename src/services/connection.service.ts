@@ -13,15 +13,15 @@ class ConnectionService {
     connectionStatus: "ignored" | "interested"
   ) {
     if (senderId === receiverId) {
-      throw new ValidationError("Sending request to yourself");
+      throw new ValidationError("Can not send request to yourself.");
     }
     if (!receiverId || !senderId || !connectionStatus) {
       throw new ValidationError(
         !receiverId
-          ? "Receiver ID"
+          ? "Receiver ID is not valid"
           : !senderId
-          ? "Sender ID"
-          : "Connection status"
+          ? "Sender ID is not valid"
+          : "Connection status is not valid"
       );
     }
     return this.connectionRepo.sendConnectionRequest(

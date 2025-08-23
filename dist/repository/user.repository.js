@@ -4,6 +4,7 @@ import UserModel from "../models/user.model.js";
 import { NotFoundError } from "../errors/notFoundError.js";
 import VerificationError from "../errors/verificationError.js";
 import bcrypt from "bcryptjs";
+import ValidationError from "../errors/validationError.js";
 class UserRepository {
     async signUp(signUpData) {
         try {
@@ -76,6 +77,23 @@ class UserRepository {
         }
         catch (error) {
             throw new Error("Error while getting all profiles.");
+        }
+    }
+    async updateProfile(userId, userData) {
+        try {
+            const user = await UserModel.findOneAndUpdate({ _id: userId }, {
+                ...userData,
+            }, { new: true });
+            if (!user) {
+                throw new ValidationError("User is not valid.");
+            }
+            return user;
+        }
+        catch (error) {
+            if (error instanceof BaseError) {
+                throw error;
+            }
+            throw new Error("Error while updating your profile.");
         }
     }
 }

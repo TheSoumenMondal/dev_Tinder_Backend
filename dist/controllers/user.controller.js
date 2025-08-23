@@ -37,3 +37,17 @@ export async function getAllProfiles(req, res) {
         statusCode: StatusCodes.OK,
     });
 }
+export async function updateUserProfile(req, res) {
+    const token = req.cookies?.token;
+    const decodedData = JwtStrategy.verifyJwt(token);
+    const userId = decodedData.userId;
+    const updatedData = req.body;
+    console.log(updatedData);
+    const user = await userService.updateUserProfile(userId, updatedData);
+    return generateApiResponse(res, {
+        data: user,
+        error: null,
+        message: "User profile updated successfully",
+        statusCode: StatusCodes.OK,
+    });
+}

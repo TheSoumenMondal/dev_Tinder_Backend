@@ -29,7 +29,7 @@ class ConnectionRepository {
       }
 
       if (connectionStatus !== "ignored" && connectionStatus !== "interested") {
-        throw new ValidationError("Connection status");
+        throw new ValidationError("Connection status must be ignored or interested");
       }
 
       const newConnection = await ConnectionModel.create({
