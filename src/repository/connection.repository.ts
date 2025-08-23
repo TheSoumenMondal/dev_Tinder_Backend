@@ -64,6 +64,13 @@ class ConnectionRepository {
         throw new VerificationError("Receiver");
       }
 
+      if (
+        connection.status === "accepted" ||
+        connection.status === "rejected"
+      ) {
+        throw new DuplicateEntryError(`Connection already ${connection.status}`);
+      }
+
       const updatedConnection = await ConnectionModel.findOneAndUpdate(
         {
           _id: connectionId,
