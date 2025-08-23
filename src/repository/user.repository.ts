@@ -6,6 +6,7 @@ import { NotFoundError } from "../errors/notFoundError.js";
 import VerificationError from "../errors/verificationError.js";
 import bcrypt from "bcryptjs";
 import ValidationError from "../errors/validationError.js";
+import UnauthorizedError from "../errors/unauthorizeError.js";
 
 class UserRepository {
   async signUp(signUpData: Partial<IUser>) {
@@ -35,7 +36,7 @@ class UserRepository {
     try {
       const user = await UserModel.findOne({ email: email });
       if (!user) {
-        throw new NotFoundError({ resource: "User" });
+        throw new UnauthorizedError("User not found");
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);

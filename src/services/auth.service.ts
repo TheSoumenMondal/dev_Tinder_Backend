@@ -21,6 +21,7 @@ class AuthService {
       verificationToken,
     };
   }
+
 }
 
 export default AuthService;
