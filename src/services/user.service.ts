@@ -15,16 +15,16 @@ class UserService {
 
   async signUpUser(signUpData: Partial<IUser>) {
     const user = await this.userRepository.signUp(signUpData);
-    return user;
+    return sanitizeLoginUserResponse(user);
   }
   async getUserById(userId: string) {
     const user = await this.userRepository.getUserById(userId);
-    return user;
+    return sanitizeLoginUserResponse(user);
   }
 
   async getAllProfiles(userId: string) {
     const users = await this.userRepository.getAllProfiles(userId);
-    return users;
+    return users.map(user => sanitizeLoginUserResponse(user));
   }
 
   async updateUserProfile(userId: string, updatedData: Partial<IUser>) {
