@@ -50,7 +50,6 @@ export async function updateUserProfile(req: Request, res: Response) {
   const decodedData = JwtStrategy.verifyJwt(token) as JwtPayload;
   const userId = decodedData.userId;
   const updatedData = req.body;
-  console.log(updatedData);
   const user = await userService.updateUserProfile(userId, updatedData);
   return generateApiResponse(res, {
     data: user,

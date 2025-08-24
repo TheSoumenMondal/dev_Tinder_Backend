@@ -28,7 +28,6 @@ class UserService {
   }
 
   async updateUserProfile(userId: string, updatedData: Partial<IUser>) {
-    console.log(updatedData);
     if (!updatedData) {
       throw new BaseError(
         "No data provided to update",
@@ -43,7 +42,6 @@ class UserService {
         validatedData
       );
       const sanitizedUser = sanitizeLoginUserResponse(updatedUser);
-      console.log(sanitizedUser);
       return sanitizedUser;
     } catch (error) {
       if (error instanceof BaseError) {
