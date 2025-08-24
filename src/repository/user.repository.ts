@@ -7,6 +7,7 @@ import VerificationError from "../errors/verificationError.js";
 import bcrypt from "bcryptjs";
 import ValidationError from "../errors/validationError.js";
 import UnauthorizedError from "../errors/unauthorizeError.js";
+import ConnectionModel from "../models/connection.model.js";
 
 class UserRepository {
   async signUp(signUpData: Partial<IUser>) {
@@ -70,15 +71,23 @@ class UserRepository {
 
   async getAllProfiles(userId: string) {
     try {
-      const users = await UserModel.find({
-        _id: {
-          $ne: userId,
-        },
+      const connections = await ConnectionModel.find(
+        { $or: [{ senderId: userId }, { receiverId: userId }] },
+        { senderId: 1, receiverId: 1, _id: 0 }
+      );
+
+      const connectedUserIds = new Set<string>();
+      connectedUserIds.add(userId);
+
+      connections.forEach(conn => {
+        if (conn.senderId.toString() !== userId) connectedUserIds.add(conn.senderId.toString());
+        if (conn.receiverId.toString() !== userId) connectedUserIds.add(conn.receiverId.toString());
       });
-      if (users.length === 0) {
-        throw new Error("No users found.");
-      }
-      return users;
+
+      const filteredUsers = await UserModel.find({
+        _id: { $nin: Array.from(connectedUserIds) }
+      });
+      return filteredUsers;
     } catch (error) {
       throw new Error("Error while getting all profiles.");
     }
