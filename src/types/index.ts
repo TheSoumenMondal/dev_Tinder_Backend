@@ -23,9 +23,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   avatarUrl?: string;
-  projects?: IProject[];
-  followers?: IUser[];
-  following?: IUser[];
+  connectionCount : number;
 }
 
 export interface ApiResponse<T = unknown> {

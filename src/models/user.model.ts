@@ -30,24 +30,10 @@ const userSchema = new mongoose.Schema<IUser>(
     avatarUrl: {
       type: String,
     },
-    projects: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
-      },
-    ],
-    followers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    following: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    connectionCount: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 );
