@@ -91,6 +91,18 @@ class ConnectionRepository {
       throw new Error("Failed to send connection request");
     }
   }
+
+  async getConnectionRequests(currentUserId: string) {
+    const connections = await ConnectionModel.find({
+      receiverId: currentUserId,
+      status: "interested",
+    }).populate("senderId", "firstName lastName avatarUrl");
+    if (!connections) {
+      throw new NotFoundError({ resource: "Connection" });
+    }
+    return connections;
+  }
+
 }
 
 export default ConnectionRepository;

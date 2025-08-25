@@ -9,7 +9,9 @@
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "seed-users": "node src/scripts/runSeedUsers.js",
+    "count-users": "node src/scripts/runCountUsers.js"
   },
   "author": "Soumen Mondal",
   "license": "ISC",
@@ -27,6 +29,7 @@
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",

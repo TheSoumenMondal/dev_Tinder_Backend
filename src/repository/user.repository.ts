@@ -69,7 +69,7 @@ class UserRepository {
     }
   }
 
-  async getAllProfiles(userId: string) {
+  async getAllProfiles(userId: string, page = 1, limit = 10) {
     try {
       const connections = await ConnectionModel.find(
         { $or: [{ senderId: userId }, { receiverId: userId }] },
@@ -79,14 +79,21 @@ class UserRepository {
       const connectedUserIds = new Set<string>();
       connectedUserIds.add(userId);
 
-      connections.forEach(conn => {
-        if (conn.senderId.toString() !== userId) connectedUserIds.add(conn.senderId.toString());
-        if (conn.receiverId.toString() !== userId) connectedUserIds.add(conn.receiverId.toString());
+      connections.forEach((conn) => {
+        if (conn.senderId.toString() !== userId)
+          connectedUserIds.add(conn.senderId.toString());
+        if (conn.receiverId.toString() !== userId)
+          connectedUserIds.add(conn.receiverId.toString());
       });
 
+      const skip = (Math.max(1, page) - 1) * Math.max(1, limit);
+
       const filteredUsers = await UserModel.find({
-        _id: { $nin: Array.from(connectedUserIds) }
-      });
+        _id: { $nin: Array.from(connectedUserIds) },
+      })
+        .skip(skip)
+        .limit(Math.max(1, limit));
+
       return filteredUsers;
     } catch (error) {
       throw new Error("Error while getting all profiles.");

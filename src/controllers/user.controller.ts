@@ -35,7 +35,13 @@ export async function getMyProfile(req: Request, res: Response) {
 export async function getAllProfiles(req: Request, res: Response) {
   const token = req.cookies?.token;
   const decodedData = JwtStrategy.verifyJwt(token) as JwtPayload;
-  const users = await userService.getAllProfiles(decodedData.userId);
+  const page = parseInt((req.query.page as string) || "1", 10);
+  const limit = parseInt((req.query.limit as string) || "10", 10);
+  const users = await userService.getAllProfiles(
+    decodedData.userId,
+    page,
+    limit
+  );
   return generateApiResponse(res, {
     data: users,
     error: null,
@@ -43,7 +49,6 @@ export async function getAllProfiles(req: Request, res: Response) {
     statusCode: StatusCodes.OK,
   });
 }
-
 
 export async function updateUserProfile(req: Request, res: Response) {
   const token = req.cookies?.token;

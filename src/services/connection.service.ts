@@ -46,6 +46,12 @@ class ConnectionService {
     );
     return connection
   }
+
+  async getConnectionRequests(currentUserId: string) {
+    const connections = await this.connectionRepo.getConnectionRequests(currentUserId);
+    return connections;
+  }
+
 }
 
 export default ConnectionService;

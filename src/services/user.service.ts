@@ -22,9 +22,9 @@ class UserService {
     return sanitizeLoginUserResponse(user);
   }
 
-  async getAllProfiles(userId: string) {
-    const users = await this.userRepository.getAllProfiles(userId);
-    return users.map(user => sanitizeLoginUserResponse(user));
+  async getAllProfiles(userId: string, page = 1, limit = 10) {
+    const users = await this.userRepository.getAllProfiles(userId, page, limit);
+    return users.map((user) => sanitizeLoginUserResponse(user));
   }
 
   async updateUserProfile(userId: string, updatedData: Partial<IUser>) {
