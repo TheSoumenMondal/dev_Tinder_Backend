@@ -103,6 +103,26 @@ class ConnectionRepository {
     return connections;
   }
 
+  async getAllConnections(currentUserId: string) {
+    const connections = await ConnectionModel.find({
+      $or: [
+        {
+          senderId: currentUserId,
+        },
+        {
+          receiverId: currentUserId,
+        }
+      ],
+      status: "accepted",
+    }).populate("senderId", "firstName lastName avatarUrl")
+      .populate("receiverId", "firstName lastName avatarUrl")
+      .exec();
+    if (!connections) {
+      throw new NotFoundError({ resource: "Connection" });
+    }
+    return connections;
+  }
+
 }
 
 export default ConnectionRepository;

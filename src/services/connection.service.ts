@@ -47,6 +47,11 @@ class ConnectionService {
     return connection
   }
 
+  async getAllConnections(currentUserId: string) {
+    const connections = await this.connectionRepo.getAllConnections(currentUserId);
+    return connections;
+  }
+
   async getConnectionRequests(currentUserId: string) {
     const connections = await this.connectionRepo.getConnectionRequests(currentUserId);
     return connections;

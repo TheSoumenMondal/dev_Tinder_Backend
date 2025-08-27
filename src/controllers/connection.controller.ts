@@ -61,3 +61,16 @@ export const getConnectionRequests = async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
   });
 }
+
+export const getAllConnections = async (req : Request , res : Response) => {
+  const token = req.cookies?.token;
+  const decoded = JwtStrategy.verifyJwt(token) as JwtPayload;
+  const currentUserId = decoded.userId;
+  const connections = await connectionService.getAllConnections(currentUserId);
+  return generateApiResponse(res, {
+    data: connections,
+    message: "Connections fetched successfully",
+    error: null,
+    statusCode: StatusCodes.OK,
+  });
+}
