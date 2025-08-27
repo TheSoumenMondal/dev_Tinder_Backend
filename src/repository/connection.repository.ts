@@ -14,6 +14,11 @@ class ConnectionRepository {
     connectionStatus: "ignored" | "interested"
   ) {
     try {
+      // Prevent self-connections at the repository level
+      if (senderId === receiverId) {
+        throw new ValidationError("Cannot send connection request to yourself");
+      }
+      
       const receiver = await UserModel.findById(receiverId);
       if (!receiver) {
         throw new NotFoundError({ resource: "User" });
@@ -95,6 +100,7 @@ class ConnectionRepository {
   async getConnectionRequests(currentUserId: string) {
     const connections = await ConnectionModel.find({
       receiverId: currentUserId,
+      senderId: { $ne: currentUserId }, // Ensure we don't return self-connections
       status: "interested",
     }).populate("senderId", "firstName lastName avatarUrl");
     if (!connections) {
@@ -105,12 +111,25 @@ class ConnectionRepository {
 
   async getAllConnections(currentUserId: string) {
     const connections = await ConnectionModel.find({
-      $or: [
+      $and: [
         {
-          senderId: currentUserId,
+          $or: [
+            {
+              senderId: currentUserId,
+            },
+            {
+              receiverId: currentUserId,
+            }
+          ]
         },
         {
-          receiverId: currentUserId,
+          // Ensure we don't return connections where the user is both sender and receiver
+          $nor: [
+            {
+              senderId: { $eq: currentUserId },
+              receiverId: { $eq: currentUserId }
+            }
+          ]
         }
       ],
       status: "accepted",
