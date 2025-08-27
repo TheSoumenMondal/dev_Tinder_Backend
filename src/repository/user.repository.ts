@@ -76,20 +76,23 @@ class UserRepository {
         { senderId: 1, receiverId: 1, _id: 0 }
       );
 
+      // Create a set of user IDs to exclude from results
       const connectedUserIds = new Set<string>();
+      
+      // Always exclude the current user from results
       connectedUserIds.add(userId);
 
       connections.forEach((conn) => {
-        if (conn.senderId.toString() !== userId)
-          connectedUserIds.add(conn.senderId.toString());
-        if (conn.receiverId.toString() !== userId)
-          connectedUserIds.add(conn.receiverId.toString());
+        // Add both sender and receiver IDs to the set regardless of who the current user is
+        connectedUserIds.add(conn.senderId.toString());
+        connectedUserIds.add(conn.receiverId.toString());
       });
 
       const skip = (Math.max(1, page) - 1) * Math.max(1, limit);
 
+      // Exclude the current user and all connected users
       const filteredUsers = await UserModel.find({
-        _id: { $nin: Array.from(connectedUserIds) },
+        _id: { $nin: Array.from(connectedUserIds) }
       })
         .skip(skip)
         .limit(Math.max(1, limit));
