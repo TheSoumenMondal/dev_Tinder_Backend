@@ -26,5 +26,5 @@ async function countUsers() {
   }
 }
 
-// Run the count function
+
 countUsers();
