@@ -18,7 +18,7 @@ class ConnectionRepository {
       if (senderId === receiverId) {
         throw new ValidationError("Cannot send connection request to yourself");
       }
-      
+
       const receiver = await UserModel.findById(receiverId);
       if (!receiver) {
         throw new NotFoundError({ resource: "User" });
@@ -34,7 +34,9 @@ class ConnectionRepository {
       }
 
       if (connectionStatus !== "ignored" && connectionStatus !== "interested") {
-        throw new ValidationError("Connection status must be ignored or interested");
+        throw new ValidationError(
+          "Connection status must be ignored or interested"
+        );
       }
 
       const newConnection = await ConnectionModel.create({
@@ -73,7 +75,9 @@ class ConnectionRepository {
         connection.status === "accepted" ||
         connection.status === "rejected"
       ) {
-        throw new DuplicateEntryError(`Connection already ${connection.status}`);
+        throw new DuplicateEntryError(
+          `Connection already ${connection.status}`
+        );
       }
 
       const updatedConnection = await ConnectionModel.findOneAndUpdate(
@@ -111,29 +115,17 @@ class ConnectionRepository {
 
   async getAllConnections(currentUserId: string) {
     const connections = await ConnectionModel.find({
-      $and: [
+      $or: [
         {
-          $or: [
-            {
-              senderId: currentUserId,
-            },
-            {
-              receiverId: currentUserId,
-            }
-          ]
+          senderId: currentUserId,
         },
         {
-          // Ensure we don't return connections where the user is both sender and receiver
-          $nor: [
-            {
-              senderId: { $eq: currentUserId },
-              receiverId: { $eq: currentUserId }
-            }
-          ]
-        }
+          receiverId: currentUserId,
+        },
       ],
       status: "accepted",
-    }).populate("senderId", "firstName lastName avatarUrl")
+    })
+      .populate("senderId", "firstName lastName avatarUrl")
       .populate("receiverId", "firstName lastName avatarUrl")
       .exec();
     if (!connections) {
@@ -141,7 +133,6 @@ class ConnectionRepository {
     }
     return connections;
   }
-
 }
 
 export default ConnectionRepository;

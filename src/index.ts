@@ -3,6 +3,8 @@ import app from "./app.js";
 import serverConfig from "./config/serverConfig.js";
 import { Response } from "express";
 import connectDB from "./config/database.js";
+import http from "http";
+import initSocket from "./utils/socket.js";
 
 app.get("/", (_, res: Response) => {
   res.status(StatusCodes.OK).json({
@@ -12,9 +14,13 @@ app.get("/", (_, res: Response) => {
   });
 });
 
+const server = http.createServer(app);
+
+initSocket(server);
+
 connectDB()
   .then(() => {
-    return app.listen(serverConfig.PORT, () => {
+    return server.listen(serverConfig.PORT, () => {
       console.log(`Server is running on port ${serverConfig.PORT}`);
     });
   })
